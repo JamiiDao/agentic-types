@@ -1,0 +1,13 @@
+[package]
+name = "agentic-types"
+version = "0.1.1"
+authors = ["448-OG <superuser@448.africa>"]
+edition = "2021"
+license = "Apache-2.0"
+
+
+[dependencies]
+serde = { version = "1.0.228", features = ["derive"] }
+
+[dev-dependencies]
+serde_json = "1.0.145"
