@@ -119,6 +119,10 @@ impl<'a> AgentCard<'a> {
         self.preferred_transport.as_ref()
     }
 
+    pub fn capabilities(&self) -> &AgentCapabilities<'_> {
+        &self.capabilities
+    }
+
     pub fn additional_interfaces(&self) -> Option<&Vec<AgentInterface<'_>>> {
         self.additional_interfaces.as_ref()
     }
@@ -178,16 +182,16 @@ pub struct AgentProvider<'a> {
 #[serde(rename_all = "camelCase")]
 pub struct AgentCapabilities<'a> {
     /// Indicates if the agent supports Server-Sent Events (SSE) for streaming responses.
-    streaming: bool,
+    pub streaming: bool,
     /// Indicates if the agent supports sending push notifications for asynchronous task updates.
-    push_notifications: bool,
+    pub push_notifications: bool,
     /// Indicates if the agent provides a history of state transitions for a task.
     #[serde(skip_serializing_if = "Option::is_none")]
-    state_transition_history: Option<bool>,
+    pub state_transition_history: Option<bool>,
     /// A list of protocol extensions supported by the agent.
     #[serde(borrow)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    extensions: Option<Vec<AgentExtension<'a>>>,
+    pub extensions: Option<Vec<AgentExtension<'a>>>,
 }
 
 /// Specifies an extension to the A2A protocol supported by the agent.
@@ -198,17 +202,17 @@ pub struct AgentCapabilities<'a> {
 #[serde(rename_all = "camelCase")]
 pub struct AgentExtension<'a> {
     /// The unique URI identifying the extension.
-    uri: String,
+    pub uri: String,
     /// A human-readable description of how this agent uses the extension.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<String>,
+    pub description: Option<String>,
     /// If true, the client must understand and comply with the extension's requirements to interact with the agent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    required: Option<bool>,
+    pub required: Option<bool>,
     /// Optional, extension-specific configuration parameters.
     #[serde(borrow)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    params: Option<BTreeMap<String, JsonStr<'a>>>,
+    pub params: Option<BTreeMap<String, JsonStr<'a>>>,
 }
 
 pub fn serialize_transport_optional<S>(
