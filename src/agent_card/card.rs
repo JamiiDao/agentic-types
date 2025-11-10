@@ -94,6 +94,72 @@ pub struct AgentCard<'a> {
     signatures: Option<Vec<AgentCardSignature<'a>>>,
 }
 
+impl<'a> AgentCard<'a> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn protocol_version(&self) -> &str {
+        self.protocol_version
+    }
+
+    pub fn name(&self) -> &str {
+        self.name
+    }
+
+    pub fn description(&self) -> &str {
+        self.description
+    }
+
+    pub fn url(&self) -> &str {
+        self.url
+    }
+
+    pub fn preferred_transport(&self) -> Option<&TransportProtocol> {
+        self.preferred_transport.as_ref()
+    }
+
+    pub fn additional_interfaces(&self) -> Option<&Vec<AgentInterface<'_>>> {
+        self.additional_interfaces.as_ref()
+    }
+
+    pub fn icon_url(&self) -> Option<&str> {
+        self.icon_url
+    }
+
+    pub fn provider(&self) -> Option<&AgentProvider<'_>> {
+        self.provider.as_ref()
+    }
+
+    pub fn documentation_url(&self) -> Option<&str> {
+        self.documentation_url
+    }
+
+    pub fn security_schemes(&self) -> Option<&BTreeMap<&'a str, SecurityScheme<'a>>> {
+        self.security_schemes.as_ref()
+    }
+
+    pub fn security(&self) -> Option<&Vec<BTreeMap<&'a str, Vec<&'a str>>>> {
+        self.security.as_ref()
+    }
+
+    pub fn default_input_modes(&self) -> &[&str] {
+        self.default_input_modes.as_slice()
+    }
+
+    pub fn default_output_modes(&self) -> &[&str] {
+        self.default_output_modes.as_slice()
+    }
+
+    pub fn supports_authenticated_extended_card(&self) -> Option<bool> {
+        self.supports_authenticated_extended_card
+    }
+
+    pub fn signatures(&self) -> Option<&Vec<AgentCardSignature<'a>>> {
+        self.signatures.as_ref()
+    }
+}
+
 /// Information about the organization or entity providing the agent.
 /// Represents the service provider of an agent.
 /// examples [{ "organization": "Google", "url": "https://ai.google.dev" }]
@@ -101,9 +167,9 @@ pub struct AgentCard<'a> {
 #[serde(rename_all = "camelCase")]
 pub struct AgentProvider<'a> {
     /// The name of the agent provider's organization.
-    organization: &'a str,
+    pub organization: &'a str,
     /// A URL for the agent provider's website or relevant documentation.
-    url: &'a str,
+    pub url: &'a str,
 }
 
 /// Specifies optional A2A protocol features supported by the agent.

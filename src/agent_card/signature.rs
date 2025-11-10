@@ -11,11 +11,11 @@ use crate::JsonStr;
 pub struct AgentCardSignature<'a> {
     /// The protected JWS header for the signature.
     /// This is a Base64url-encoded JSON object, as per RFC 7515.
-    protected: &'a str,
+    pub protected: &'a str,
     /// The computed signature, Base64url-encoded.
     #[serde(borrow)]
-    signature: &'a str,
+    pub signature: &'a str,
     /// The unprotected JWS header values.
     #[serde(skip_serializing_if = "Option::is_none")]
-    header: Option<BTreeMap<&'a str, JsonStr<'a>>>,
+    pub header: Option<BTreeMap<&'a str, JsonStr<'a>>>,
 }
