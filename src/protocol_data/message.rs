@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use std::{borrow::Cow, collections::BTreeMap};
 
 use crate::{JsonStr, JsonStrMemKV};
 
@@ -82,8 +82,10 @@ pub struct PartBase<'a> {
 #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Hash, Serialize, Deserialize)]
 pub struct TextPart<'a> {
     #[serde(flatten)]
+    #[serde(borrow)]
     pub base: PartBase<'a>,
-    pub text: &'a str,
+    #[serde(borrow)]
+    pub text: Cow<'a, str>,
 }
 
 /// Represents a file segment within a message or artifact
@@ -127,7 +129,7 @@ impl<'a> Default for FileWith<'a> {
 pub struct FileWithBytes<'a> {
     #[serde(flatten)]
     base: FileBase<'a>,
-    bytes: &'a str,
+    bytes: Cow<'a, str>,
     // uri is absent (handled by never type in TS)
 }
 
@@ -136,7 +138,7 @@ pub struct FileWithBytes<'a> {
 pub struct FileWithUri<'a> {
     #[serde(flatten)]
     base: FileBase<'a>,
-    uri: &'a str,
+    uri: Cow<'a, str>,
     // bytes is absent (handled by never type in TS)
 }
 
@@ -144,7 +146,7 @@ pub struct FileWithUri<'a> {
 #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Hash, Serialize, Deserialize)]
 pub struct FileBase<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    name: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    mime_type: Option<&'a str>,
+    mime_type: Option<Cow<'a, str>>,
 }
