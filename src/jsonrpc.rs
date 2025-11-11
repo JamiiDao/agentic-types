@@ -7,20 +7,21 @@ use crate::{
 
 /// A2A adheres to the standard JSON-RPC 2.0 structures for requests and responses.
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
-pub struct JsonRpcRequest<'a> {
+pub struct JsonRpcRequest<'a, T> {
     /// A String specifying the version of the JSON-RPC protocol. MUST be exactly "2.0".
-    jsonrpc: &'a str,
+    pub jsonrpc: &'a str,
     /// A String containing the name of the method to be invoked (e.g., "message/send", "tasks/get").
-    method: &'a str,
+    pub method: &'a str,
     /// A Structured value that holds the parameter values to be used during the invocation of the method. This member MAY be omitted if the method expects no parameters. A2A methods typically use an object for params.
-    #[serde(borrow)]
-    params: Option<JsonStr<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub params: Option<T>,
     /// An identifier established by the Client that MUST contain a String, Number, or NULL value if included.
     /// If it is not included it is assumed to be a notification. The value SHOULD NOT be NULL for requests expecting a response,
     /// and Numbers SHOULD NOT contain fractional parts. The Server MUST reply with the same value in the Response object
     /// if included. This member is used to correlate the context between the two objects.
     /// A2A methods typically expect a response or stream, so id will usually be present and non-null.
-    id: Option<JsonRpcId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<JsonRpcId>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
@@ -61,19 +62,9 @@ pub enum JsonRpcPayload<'a, T> {
     },
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
-pub struct JsonRpcError<'a> {
-    code: i32,
-    #[serde(borrow)]
-    message: &'a str,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(borrow)]
-    data: Option<JsonStr<'a>>,
-}
-
 /// Represents a JSON-RPC 2.0 Error object, included in an error response.
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
-pub struct JSONRPCError<'a> {
+pub struct JsonRpcError<'a> {
     /// A number that indicates the error type that occurred.
     code: i64,
     /// A string providing a short description of the error.
