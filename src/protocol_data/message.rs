@@ -75,15 +75,15 @@ impl<'a> Default for Part<'a> {
 pub struct PartBase<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(borrow)]
-    metadata: Option<JsonStrMemKV<'a>>,
+    pub metadata: Option<JsonStrMemKV<'a>>,
 }
 
 /// Represents a text segment within a message or artifact
 #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Hash, Serialize, Deserialize)]
 pub struct TextPart<'a> {
     #[serde(flatten)]
-    base: PartBase<'a>,
-    text: &'a str,
+    pub base: PartBase<'a>,
+    pub text: &'a str,
 }
 
 /// Represents a file segment within a message or artifact
@@ -91,9 +91,9 @@ pub struct TextPart<'a> {
 pub struct FilePart<'a> {
     #[serde(flatten)]
     #[serde(borrow)]
-    base: PartBase<'a>,
+    pub base: PartBase<'a>,
     #[serde(borrow)]
-    file: FileWith<'a>,
+    pub file: FileWith<'a>,
 }
 
 /// Represents structured data within a message or artifact
@@ -101,9 +101,9 @@ pub struct FilePart<'a> {
 pub struct DataPart<'a> {
     #[serde(flatten)]
     #[serde(borrow)]
-    base: PartBase<'a>,
+    pub base: PartBase<'a>,
     #[serde(borrow)]
-    data: BTreeMap<&'a str, JsonStr<'a>>,
+    pub data: BTreeMap<&'a str, JsonStr<'a>>,
 }
 
 /// File content as either bytes or URI
