@@ -77,6 +77,7 @@ pub struct JsonRpcError<'a> {
     pub data: Option<JsonStr<'a>>,
 }
 
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash)]
 pub enum JsonRpcMethods {
     /// `message/send` POST method
     MessageSend,
