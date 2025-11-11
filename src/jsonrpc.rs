@@ -95,13 +95,23 @@ pub enum JsonRpcMethods {
     AgentGetAuthenticatedExtendedCard,
 }
 
+impl JsonRpcMethods {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::MessageSend => "message/send",
+            Self::MessageStream => "message/stream",
+            _ => "message/send",
+        }
+    }
+}
+
 impl<'a> TryFrom<&'a str> for JsonRpcMethods {
     type Error = JsonRpcError<'a>;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         let outcome = match value.trim() {
-            "message/send" => Self::MessageSend,
-            "message/stream" => Self::MessageStream,
+            val if val.as_bytes() == Self::MessageSend.as_str().as_bytes() => Self::MessageSend,
+            val if val.as_bytes() == Self::MessageStream.as_str().as_bytes() => Self::MessageStream,
             _ => return Err(JsonRpcError {
                 code: -32601,
                 message:
