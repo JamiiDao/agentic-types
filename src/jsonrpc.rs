@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -39,15 +41,15 @@ pub enum JsonRpcId {
 pub struct JsonRpcResponse<'a, T> {
     /// A String specifying the version of the JSON-RPC protocol. MUST be exactly "2.0".
     #[serde(borrow)]
-    jsonrpc: &'a str,
+    pub jsonrpc: &'a str,
     /// This member is REQUIRED. It MUST be the same as the value of the id member in the Request Object.
     /// If there was an error in detecting the id in the Request object (e.g. Parse error/Invalid Request), it MUST be null.
     #[serde(skip_serializing_if = "Option::is_none")]
-    id: Option<JsonRpcId>,
+    pub id: Option<JsonRpcId>,
     /// [JsonRpcPayload] representing a success or error
     #[serde(flatten)]
     #[serde(borrow)]
-    payload: JsonRpcPayload<'a, T>,
+    pub payload: JsonRpcPayload<'a, T>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
@@ -66,16 +68,19 @@ pub enum JsonRpcPayload<'a, T> {
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub struct JsonRpcError<'a> {
     /// A number that indicates the error type that occurred.
-    code: i64,
+    pub code: i64,
     /// A string providing a short description of the error.
-    message: &'a str,
+    #[serde(borrow)]
+    pub message: Cow<'a, str>,
     /// A primitive or structured value containing additional information about the error.
     #[serde(skip_serializing_if = "Option::is_none")]
-    data: Option<JsonStr<'a>>,
+    pub data: Option<JsonStr<'a>>,
 }
 
 pub enum JsonRpcMethods {
+    /// `message/send` POST method
     MessageSend,
+    /// `message/stream` POST method
     MessageStream,
     TasksGet,
     TasksStream,
@@ -89,17 +94,37 @@ pub enum JsonRpcMethods {
     AgentGetAuthenticatedExtendedCard,
 }
 
+impl<'a> TryFrom<&'a str> for JsonRpcMethods {
+    type Error = JsonRpcError<'a>;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        let outcome = match value.trim() {
+            "message/send" => Self::MessageSend,
+            "message/stream" => Self::MessageStream,
+            _ => return Err(JsonRpcError {
+                code: -32601,
+                message:
+                    "Currently only message/send and message/stream are supported by this service"
+                        .into(),
+                data: Option::None,
+            }),
+        };
+
+        Ok(outcome)
+    }
+}
+
 /// Defines the parameters for a request to send a message to an agent. This can be used
 /// to create a new task, continue an existing one, or restart a task.
 #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Hash, Serialize, Deserialize)]
 pub struct MessageSendParams<'a> {
     /// The message object being sent to the agent.
     #[serde(borrow)]
-    message: Message<'a>,
+    pub message: Message<'a>,
     /// Optional configuration for the send request.
-    configuration: Option<MessageSendConfiguration<'a>>,
+    pub configuration: Option<MessageSendConfiguration<'a>>,
     /// Optional metadata for extensions.
-    metadata: Option<JsonStrMemKV<'a>>,
+    pub metadata: Option<JsonStrMemKV<'a>>,
 }
 
 /// Defines configuration options for a `message/send` or `message/stream` request.

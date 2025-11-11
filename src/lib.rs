@@ -9,6 +9,7 @@ pub use util_types::*;
 
 pub mod jsonrpc;
 
-pub mod errors;
+mod errors;
+pub use errors::*;
 
 mod unit_tests;

@@ -9,26 +9,26 @@ use crate::{JsonStr, JsonStrMemKV};
 pub struct Message<'a> {
     pub role: MessageRole,
     #[serde(borrow)]
-    parts: Vec<Part<'a>>,
+    pub parts: Vec<Part<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(borrow)]
-    metadata: Option<JsonStrMemKV<'a>>,
+    pub metadata: Option<JsonStrMemKV<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(borrow)]
-    extensions: Option<Vec<&'a str>>,
+    pub extensions: Option<Vec<&'a str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(borrow)]
-    reference_task_ids: Option<Vec<&'a str>>,
+    pub reference_task_ids: Option<Vec<&'a str>>,
     #[serde(borrow)]
-    message_id: &'a str,
+    pub message_id: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(borrow)]
-    task_id: Option<&'a str>,
+    pub task_id: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(borrow)]
-    context_id: Option<&'a str>,
+    pub context_id: Option<&'a str>,
     #[serde(borrow)]
-    kind: &'a str,
+    pub kind: &'a str,
 }
 
 impl<'a> Message<'a> {
